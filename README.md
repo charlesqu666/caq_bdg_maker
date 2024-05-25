@@ -1,26 +1,43 @@
 # caq_bdg_maker
 依据bed文件生成bdg文件
+
 欢迎使用！！！！！！！！！！！！！
+
 本软件可以使用一个或者多个bed文件来生成对应的bdg文件
 
+
 在使用前你应该知道以下几点：
+
 1.请使用sorted的bed文件进行运行，否则结果文件不会正确
+
 2.bdg_maker.py为生成bdg文件的主程序，但是在使用此之前，请确保使用的bed文件都使用了bed_caqidx_maker.py生成了后缀名为caqidx的索引文件
+
 3.生成出的bdg文件每行对应一个碱基位置，即使本可以和后面一行进行合并，但是此程序没有进行此处理
 
 
 bed_caqidx_maker.py使用教程：
+
 请在运行前使用文本浏览器打开
+
 path后面的字符串为进行运行的路径
+
 offset可根据自己需求进行调节
+
 
 
 bdg_maker.py使用教程：
 请在运行前使用文本浏览器打开
+
 file_path_list为即将进行运算的列表，即使只有一个文件也请以列表格式写入
+
 例子：
-  单个文件：[r'C:\sra.bed']
-  多个文件：[r'C:\sra.bed',r'ras.bed']
+
+    单个文件：[r'C:\sra.bed']
+  
+    多个文件：[r'C:\sra.bed',r'ras.bed']
+  
 out_path为输出文件路径
+
 out_dict为另类输出文件路径，不希望输出此文件请写为out_dict=r''
+
 how_many_legth_once，fail_time_max可根据自己需求进行调节
