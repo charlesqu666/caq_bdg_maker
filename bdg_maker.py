@@ -1,7 +1,18 @@
 
-file_path_list=[r'G:\SRR21661978\SRR21661978.out-splice-high.sorted.bed',r'G:\SRR21661978\SRR21661978.out-fanse2high.sorted.bed']
-out_path=r'G:\try5.25.bdg'         #必填--普通bdg文件输出路径
-out_dict=r'G:\try5.25.dict'          #非必填--生成非官方格式的文件，不希望生成请写为out_dict=r''
+file_path_list=[r'G:\new\SRR21661947\SRR21661947.out-fanse2high.sorted.bed',
+                r'G:\new\SRR21661947\SRR21661947.out-splice-high.sorted.bed',
+                r'G:\new\SRR21661948\SRR21661948.out-fanse2high.sorted.bed',
+                r'G:\new\SRR21661948\SRR21661948.out-splice-high.sorted.bed',
+                r'G:\new\SRR21661949\SRR21661949.out-fanse2high.sorted.bed',
+                r'G:\new\SRR21661949\SRR21661949.out-splice-high.sorted.bed',
+                r'G:\new\SRR21661978\SRR21661978.out-fanse2high.sorted.bed',
+                r'G:\new\SRR21661978\SRR21661978.out-splice-high.sorted.bed',
+                r'G:\new\SRR24181851\SRR24181851.spliceout-fanse2high.sorted.bed',
+                r'G:\new\SRR24181851\SRR24181851.spliceout-splice-high.sorted.bed',
+                r'G:\new\SRR24181852\SRR24181852.out-fanse2high.sorted.bed',
+                r'G:\new\SRR24181852\SRR24181852.out-splice-high.sorted.bed']
+out_path=r'G:\new\all_out.bdg'         #必填--普通bdg文件输出路径
+out_dict=r'G:\new\all_out.dict'          #非必填--生成非官方格式的文件，不希望生成请写为out_dict=r''
 how_many_legth_once=100000    #每次统计多少长度，统计完一次写入一次
 fail_time_max=25     #读取文件读取到几条不符合就跳过了
 
@@ -42,13 +53,15 @@ for file_path in file_path_list:
 
 print('各染色体结束位置字典：{}'.format(str(end_place_dict)))
 
-def count_dict_updata(lis):
+def count_dict_updata(lis,start,end):
     global count_dict
     lis_start=int(lis[1])
     lis_end=int(lis[2])
-    for i in count_dict.keys():
-        if int(i) >= lis_start and int(i) < lis_end:
+    for i in range(lis_start,lis_end):
+        if i >= start and i < end:
             count_dict[i] += 1
+
+
 
 
 
@@ -92,6 +105,8 @@ for chr_name in end_place_dict.keys():          #对每个染色体进行操作
 
             file_now.seek(good_start_index)
 
+            break_sign = 0
+
             while 1 == 1:                       #寻找开头
                 now_line=file_now.readline()
                 now_lis=now_line.split('\t')
@@ -99,6 +114,7 @@ for chr_name in end_place_dict.keys():          #对每个染色体进行操作
                 if len(now_lis) < 5:
                     print('读取停止，当前行列表{}'.format(str(now_lis)))
                     start_success=0
+                    break_sign=1
                     break
 
                 if str(now_lis[0]) == str(chr_name) and found_need_chr == False:
@@ -109,9 +125,12 @@ for chr_name in end_place_dict.keys():          #对每个染色体进行操作
                     break
 
                 if now_lis[0] == str(chr_name) and range_start_now < int(now_lis[2]) and range_start_now+how_many_legth_once > int(now_lis[1]):#发现符合的了
-                    count_dict_updata(now_lis)  #对符合的处理函数
+                    count_dict_updata(now_lis,range_start_now,range_start_now+how_many_legth_once)  #对符合的处理函数
                     start_success=1
                     break
+
+            if break_sign == 1:
+                break
 
             fail_times=0
             stop_sigle=0
@@ -120,7 +139,7 @@ for chr_name in end_place_dict.keys():          #对每个染色体进行操作
                     now_line = file_now.readline()
                     now_lis = now_line.split('\t')
                     if now_lis[0] == str(chr_name) and range_start_now < int(now_lis[2]) and range_start_now + how_many_legth_once > int(now_lis[1]): #符合要求
-                        count_dict_updata(now_lis)
+                        count_dict_updata(now_lis,range_start_now,range_start_now+how_many_legth_once)
                         fail_times = 0
                     else:
                         fail_times += 1
